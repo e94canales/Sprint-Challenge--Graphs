@@ -27,7 +27,45 @@ player = Player(world.starting_room)
 
 # Fill this out with directions to walk
 # traversal_path = ['n', 'n']
+
+# init path
 traversal_path = []
+# init to back track dead ends
+backmoves = []
+backdirection = {'n': 's', 's': 'n', 'e': 'w', 'w': 'e'}
+visited = set()
+
+while len(visited) < len(room_graph):
+    # init as none
+    nextt = None
+    exits = player.current_room.get_exits()
+
+    for exitt in exits:
+        # for each exit in the current room, if they are not in visited assign themas next
+        if player.current_room.get_room_in_direction(exitt) not in visited:
+                nextt = exitt
+                # break loop as soon as next is found
+                break
+
+    # if the next move is none, 
+    if not nextt:
+        # get previous value from the backmoves array
+        nextt = backmoves.pop()
+
+        # add to path
+        traversal_path.append(nextt)
+        # travel back
+        player.travel(nextt)
+    else:
+        # add to path
+        traversal_path.append(nextt)
+        # set a backtrack
+        backmoves.append(backdirection[nextt])
+
+        # travel
+        player.travel(nextt)
+        visited.add(player.current_room)
+        
 
 
 
